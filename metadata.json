@@ -1,0 +1,6 @@
+{
+  "name": "Summerland Academy - Board Leader Portal",
+  "description": "Executive school management and monitoring system for the Board Leader of Summerland Academy (Kindergarten & Elementary).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

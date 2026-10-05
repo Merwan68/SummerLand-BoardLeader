@@ -1,0 +1,95 @@
+{
+  "entities": {
+    "SystemConfig": {
+      "title": "SystemConfig",
+      "description": "System flags such as whether the single Board Leader account has been provisioned.",
+      "type": "object",
+      "properties": {
+        "leaderAccountCreated": {
+          "type": "boolean",
+          "description": "Whether the primary Board Leader account has been initialized."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "BoardLeader": {
+      "title": "BoardLeader",
+      "description": "Board Leader account profile and administrative credentials.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address of the Board Leader."
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name or title of the Board Leader."
+        },
+        "role": {
+          "type": "string",
+          "description": "System role (Board Leader)."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp."
+        }
+      },
+      "required": ["email", "role"]
+    },
+    "SchoolData": {
+      "title": "SchoolData",
+      "description": "Summerland Academy institutional data partition.",
+      "type": "object",
+      "properties": {
+        "schoolId": {
+          "type": "string",
+          "description": "Identifier of the school."
+        },
+        "updatedBy": {
+          "type": "string",
+          "description": "UID of the Board Leader who updated."
+        },
+        "payload": {
+          "type": "string",
+          "description": "Serialized institutional state and relational datasets."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the last sync."
+        }
+      },
+      "required": ["schoolId", "updatedBy"]
+    }
+  },
+  "firestore": {
+    "/system/{docId}": {
+      "schema": {
+        "$ref": "#/entities/SystemConfig"
+      },
+      "description": "Public system configuration flags such as initialization status."
+    },
+    "/board_leaders/{userId}": {
+      "schema": {
+        "$ref": "#/entities/BoardLeader"
+      },
+      "description": "Profiles for authenticated Board Leaders."
+    },
+    "/schools/{schoolId}": {
+      "schema": {
+        "$ref": "#/entities/SchoolData"
+      },
+      "description": "Synchronized operational school datasets."
+    }
+  }
+}

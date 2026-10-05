@@ -1,0 +1,49 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Public system status (only whether setup is initialized, no sensitive school data)
+    match /system/{docId} {
+      allow get: if true;
+      allow list: if false;
+      allow create, update: if true;
+      allow delete: if false;
+    }
+
+    // Board Leaders collection
+    match /board_leaders/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isOwner(userId)
+        && request.resource.data.keys().hasAll(['email', 'role'])
+        && request.resource.data.role == 'Board Leader';
+      allow update: if isOwner(userId);
+      allow delete: if false;
+    }
+
+    // Schools master collection
+    match /schools/{schoolId} {
+      allow get, list: if isSignedIn();
+      allow create, update: if isSignedIn();
+      allow delete: if false;
+    }
+  }
+}
